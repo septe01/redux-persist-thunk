@@ -1,33 +1,32 @@
-
-import client from '../utils/client'
+import client from '../utils/client';
 
 exports.getArticle = () => dispatch => {
-    dispatch({
-        type: 'GET_ARTICLE'
+  dispatch({
+    type: 'GET_ARTICLE',
+  });
+  client
+    .get('/articles') // return status code 500 internal server error
+    .then(result => {
+      console.log(result);
+      dispatch({
+        type: 'GET_ARTICLE_SUCCESS',
+        payload: {
+          data: result.data,
+          message: 'success get article',
+        },
+      });
     })
-    client.get('/articles') // return status code 500 internal server error
-        .then(result => {
-            console.log(result)
-            dispatch({
-                type: 'GET_ARTICLE_SUCCESS',
-                payload: {
-                    data: result.data,
-                    message: 'success get article'
-                }
-            })
-        }).catch(err => {
-            console.log({ err })
-            const statusCode = err?.response?.status;
-            dispatch({
-                type: 'GET_ARTICLE_FAILED',
-                payload: {
-                    message: 'failed to get article'
-                }
-            })
-        })
-
-}
-
+    .catch(err => {
+      console.log({err});
+      const statusCode = err?.response?.status;
+      dispatch({
+        type: 'GET_ARTICLE_FAILED',
+        payload: {
+          message: 'failed to get article',
+        },
+      });
+    });
+};
 
 //     const requestToApi = () => {
 //         setLoading(true)
@@ -50,4 +49,3 @@ exports.getArticle = () => dispatch => {
 //                 }
 //             })
 //     }
-
